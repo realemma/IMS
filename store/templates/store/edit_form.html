@@ -1,0 +1,35 @@
+{% extends 'core/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+<div class="container">
+{% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {{ message|safe|escape }}
+    </div>
+    {% elif message.tags == 'error' %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          {{ message|safe }}
+    </div>
+    {% endif %}
+{% endfor %}
+
+        <div class="container">
+            <h2>{{ title }}</h2>
+            <form method = "post" action=" ">
+                <div class="mb-3 mt-3">
+                {%  csrf_token %}
+                  {{ form.as_p }}
+                </div>
+                <button type="submit" class="w-50 btn btn-primary" name = "submit">Submit</button>
+            </form>
+        </div>
+</div>
+
+{% endblock %}  
+
+ 

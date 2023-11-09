@@ -1,0 +1,183 @@
+{% extends 'core/base.html' %}
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+<h1>Dashboard</h1>
+{% for message in messages %}
+  {% if message.tags == 'success' %}
+  <div class="alert alert-success alert-dismissible" role="alert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    {{ message|safe|escape }}
+  </div>
+  {% elif message.tags == 'error' %}
+  <div class="alert alert-danger alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        <strong>Error</strong> {{ message|safe }}
+  </div>
+  {% elif message.tags == 'warning' %}
+  <div class="alert alert-warning alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {{ message|safe|escape }}
+  </div>
+  {% endif %}
+{% endfor %}
+<div class="row">
+  <div class="col-sm-4 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        {% if pend is not None %}
+        <a class="btn btn-primary" href="{% url 'dashboard' %}">Create Request</a>     
+        {% else %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+          Create Request
+        </button> 
+        {% endif %}
+        <!-- The Modal -->
+        <div class="modal fade" id="myModal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+        
+              <!-- Modal Header -->
+              <div class="modal-header">
+                <h4 class="modal-title">{{ title }}</h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+              </div>
+        
+        
+              <!-- Modal body -->
+              <div class="modal-body">
+                <form method = "post" action=" ">
+                    <div class="mb-3 mt-3">
+                  {%  csrf_token %}
+                    {{ form.as_p }}
+                  </div>
+                  <button type="submit" class="btn btn-primary" name = "submit">Submit</button>
+                </form>
+              </div>
+        
+              <!-- Modal footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+              </div>
+        
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-8 col-sm-12 col-xl-8 my-auto">
+            <div class="d-flex d-sm-block d-md-flex align-items-center">
+              <h2 class="mb-0"></h2>
+              <p class="text-success ml-2 mb-0 font-weight-medium">New Requests: 
+               <span class="badge bg-primary text-white">{{ uncom }}</span></p>
+            </div>
+            <h6 class="text-muted font-weight-normal">last Requested: <span class="badge bg-primary text-white"> {{ last.transaction_id }}</span></h6>
+          </div>
+          <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+            <i class="icon-lg mdi mdi-codepen text-primary ml-auto"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <a class="btn btn-primary" href="{% url 'pend' %}">
+          Pending Request
+        </a>
+        <div class="row">
+          <div class="col-8 col-sm-12 col-xl-8 my-auto">
+            <div class="d-flex d-sm-block d-md-flex align-items-center">
+              <p class="text-success ml-2 mb-0 font-weight-medium">Pending: 
+                <span class="badge bg-primary text-white">{{ pends }}</span></p>
+            </div>
+            <h6 class="text-muted font-weight-normal"> Awaiting allocation  <span class="badge bg-primary text-white">{{ add }}</span></h6>
+          </div>
+          <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+            <i class="icon-lg mdi mdi-wallet-travel text-danger ml-auto"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-4 grid-margin">
+    <div class="card">
+      <div class="card-body">
+        <a class="btn btn-primary" href="{% url 'approve' %}">
+          Approved Request  </a>             
+            <span class="badge bg-primary text-white"> {{ approve }}</span>
+        
+        <div class="row">
+          <div class="col-8 col-sm-12 col-xl-8 my-auto">
+            <div class="d-flex d-sm-block d-md-flex align-items-center">
+              <a style="text-decoration: underline;" href="{% url 'reject' %}">
+                <h6 style="color: red;">Rejected Request  <span class="badge bg-primary text-white">{{ reject }}</span> </h6>
+              </a>
+            </div>
+            <h6 class="text-muted font-weight-normal">Last Allocated <span class="badge bg-primary text-white"> {{ lapprove.transaction_id }}</span> </h6>
+          </div>
+          <div class="col-4 col-sm-12 col-xl-4 text-center text-xl-right">
+            <i class="icon-lg mdi mdi-monitor text-success ml-auto"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="container-fluid mt-3">
+  <h1>{{ title }}</h1>
+
+<table class="table table-hover" id = "datatableid">
+  <thead>
+    <tr>
+      <th>S/N</th>
+      <th>Item</th>
+      <th>Location</th>
+      <th>Category</th>
+      <th>Quantity</th>
+      <th>Request ID</th>  
+      <th>Action</th> 
+      {% if status is not None %}
+
+      {% else %}
+        <th>Action</th> 
+      {% endif %} 
+ 
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in item|dictsort:"id" %}
+
+    <tr>
+      <td>{{ forloop.counter}}</td>
+      <td>{{ item.item }}</td>
+      <td>{{ item.location }}</td>
+      <td>{{ item.category }}</td>
+      <td>{{ item.quantity }}</td>
+      <td>{{ item.transaction_id }}</td>
+      
+      {% if item.status == 'uncompleted' %}
+        <td><a class=" btn btn-success btn-sm" href="{% url 'Uncom' item.slug %}"><i class="fas fa-edit"></i> edits</a></td>
+        <td><a class=" btn btn-danger btn-sm" onclick="return confirm('this action is irreversible')" href="#"><i class="far fa-trash-alt"></i> Delete</a></td>
+      {% elif item.status == 'pending' %}
+      <td><a class=" btn btn-success btn-sm" href="{% url 'pend_app' item.slug %}"><i class="fas fa-edit"></i>Approve</a></td>
+      <td><a class=" btn btn-danger btn-sm" onclick="return confirm('this action is irreversible')" href="{% url 'pend_reject' item.slug %}"><i class="far fa-trash-alt"></i> Reject</a></td>
+      {% elif item.status == 'approved' %}
+      <td><a class=" btn btn-success btn-sm" href="{% url 'approve_edit' item.slug %}"><i class="fas fa-edit"></i>View</a></td>
+      {% elif item.status == 'rejected' %}
+      <td><a class=" btn btn-success btn-sm" href="{% url 'reject_edit' item.slug %}"><i class="fas fa-edit"></i>View</a></td>
+      {% endif %}
+    </tr>
+    {% endfor %}    
+  </tbody>
+</table>
+</div> 
+
+</div>
+</main>
+</div>
+</div>
+
+{% endblock %}  

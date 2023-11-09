@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}
+{% block title %} Location {% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+  <h2 class="mx-auto"  style="width:100px" >Locations</h2>
+
+{% for message in messages %}
+  {% if message.tags == 'success' %}
+  <div class="alert alert-success alert-dismissible" role="alert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    {{ message|safe|escape }}
+  </div>
+  {% elif message.tags == 'error' %}
+  <div class="alert alert-danger alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{ message|safe }}
+  </div>
+  {% elif message.tags == 'warning' %}
+  <div class="alert alert-warning alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {{ message|safe|escape }}
+  </div>
+
+  {% endif %}
+{% endfor %}
+
+
+
+
+<div class="col-3 float-end mb-3">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+    Add a Location
+  </button>
+</div>
+
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Location</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+      </div>
+
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method = "post" action="{% url 'location' %}">
+          <div class="mb-3 mt-3">
+            {%  csrf_token %}
+              {{ form.as_p }}
+          </div>
+            <button type="submit" class="btn btn-primary" name = "submit">Submit</button>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+  </div>
+  </div>
+  
+  
+  <table class="table table-hover" id = "datatableid">
+    <thead>
+      <tr>
+        <th>S/N</th>
+        <th>Location</th>
+        <th>Code</th>
+        <th>Createdat</th>
+        <th>Action</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for location in location %}
+      <tr>
+        <td>{{ forloop.counter}}</td>
+        <td>{{ location.title }}</td>
+        <td>{{ location.slug }}</td>
+        <td>{{ location.created_at }}</td>
+        <td><a class=" btn btn-success" href="{% url 'edit_loc' location.slug %}"><i class="fas fa-edit"></i> edits</a></td>
+        <td><a class=" btn btn-danger" onclick="return confirm('this action is irreversible')" href="{% url 'delete_loc' location.slug %}"><i class="far fa-trash-alt"></i> Delete</a></td>
+      </tr>
+      {% endfor %}    
+    </tbody>
+  </table>
+</div>
+{% endblock %}  

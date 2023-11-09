@@ -1,0 +1,105 @@
+{% extends 'core/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+  <h2  class="mx-auto"  style="width:100px"  >{{ title }}</h2>
+
+  {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {{ message|safe|escape }}
+    </div>
+    {% elif message.tags == 'error' %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          {{ message|safe }}
+    </div>
+    {% elif message.tags == 'warning' %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{ message|safe|escape }}
+    </div>
+
+    {% endif %}
+  {% endfor %}
+
+<div class="col-3 float-end mb-3">
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+    <i class="fas fa-angle-double-right"></i> Add an item
+  </button>
+</div>
+
+<!-- The Modal -->
+<div class="modal fade" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">{{ title }}</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+      </div>
+
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form method = "post" action=" ">
+            <div class="mb-3 mt-3">
+          {%  csrf_token %}
+            {{ form.as_p }}
+          </div>
+          <button type="submit" class="btn btn-primary" name = "submit">Submit</button>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+  </div>
+  </div>
+  
+  
+  <table class="table table-hover" id = "datatableid">
+    <thead>
+      <tr>
+        <th>S/N</th>
+        <th>{{ title }}</th>
+        <th>Code</th>
+        <th>Category</th>
+        <th>Quantity</th>
+        <th>Createdat</th>  
+        <th>Action</th> 
+        <th>Action</th>      
+     
+    
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in item|dictsort:"id" %}
+
+      <tr>
+        <td>{{ forloop.counter}}</td>
+        <td>{{ item.title }}</td>
+        <td>{{ item.slug }}</td>
+        <td>{{ item.category }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.created_at }}</td>
+        <td><a class=" btn btn-success btn-sm" href="{% url 'edit_Item' item.slug %}"><i class="fas fa-edit"></i> edits</a></td>
+        <td><a class=" btn btn-danger btn-sm" onclick="return confirm('this action is irreversible')" href="{% url 'delete_item' item.slug %}"><i class="far fa-trash-alt"></i> Delete</a></td>
+
+      </tr>
+      {% endfor %}    
+    </tbody>
+  </table>
+</div>
+
+
+
+{% endblock %}  

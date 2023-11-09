@@ -1,0 +1,98 @@
+{% extends 'core/base.html' %}
+{% block title %} Credentials {% endblock %}
+
+{% block content %}
+<div class="bg-light rounded-4 py-5 px-4 px-md-5">
+  <div class="text-center">
+    <div class="feature bg-primary bg-gradient-primary-to-secondary text-white rounded-3"><i class="bi bi-envelope"></i></div>
+  </div>
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {{ message|safe|escape }}
+    </div>
+    {% elif message.tags == 'error' %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          {{ message|safe }}
+    </div>
+    {% elif message.tags == 'warning' %}
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{ message|safe|escape }}
+    </div>
+    {% endif %}
+  {% endfor %}
+
+  <div class="col-3 float-end mb-3">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+      <i class="fas fa-user-cog"></i> Add a {{ title }}
+    </button>
+  </div>
+  
+  <!-- The Modal -->
+  <div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+              <h4 class="modal-title">Add a {{ title }}</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal">&times;</button>
+        </div>  
+            <!-- Modal body -->
+        <div class="modal-body">
+          <form action="" method= "POST">
+              {% csrf_token %}
+              <!-- Name input-->          
+              <div class="mb-3 mt-3">
+                {%  csrf_token %}
+                  {{ form.as_p }}
+                </div>  
+            <!-- Submit Button-->
+            <div class="d-grid"><button class="w-50 btn btn-primary btn-lg" id="submitButton" type="submit">Submit</button></div>
+          </form>
+        </div> 
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+     
+<div class="container-fluid"> 
+  <table class="table table-hover" id = "datatableid">
+    <thead>
+      <tr>
+        <th>S/N</th>
+        <th>Subject</th>
+        <th>email</th>
+        <th>username</th>
+        <th>password</th>
+        <th>Action</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for note in item %}
+
+      <tr>
+        <td>{{ forloop.counter}}</td>
+        <td>{{ note.title }}</td>
+        <td>{{ note.email }}</td>
+        <td>{{ note.username }}</td>
+        <td>{{ note.password }}</td>
+        <td><a href="{% url 'edit_note' note.slug %}"  class="btn btn-success btn-sm"><i class="fas fa-edit"></i> Edit</a></td>
+        <td><a href="{% url 'delete_note' note.slug %}" onclick="return confirm('this action is irreversible')" class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i> Delete</a></td>
+      </tr>
+      {% endfor %}    
+    </tbody>
+  </table>
+</div>
+
+
+{% endblock %}  
+

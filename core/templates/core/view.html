@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+{% for message in messages %}
+  {% if message.tags == 'success' %}
+  <div class="alert alert-success alert-dismissible" role="alert">
+    <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+    {{ message|safe|escape }}
+  </div>
+  {% elif message.tags == 'error' %}
+  <div class="alert alert-danger alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+        {{ message|safe }}
+  </div>
+  {% elif message.tags == 'warning' %}
+  <div class="alert alert-warning alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {{ message|safe|escape }}
+  </div>
+``{% endif %}
+{% endfor %}
+
+
+<div class="container mt-3 ">
+  
+  <h2>Requisition</h2>
+  <div class="card border border-primary">
+    <div class="card-header bg-primary text-white">
+      {{ title }}
+    </div>
+    <div class="container mt-3 mb-3">
+      <form method = "post" action=" ">
+        {%  csrf_token %}
+        <div class="container">
+          <div class="row">
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input class="form-control" id="name" type="text" placeholder="Enter your name..." value="{{ Req.transaction_id }}" readonly/>
+                <label for="name">Transactio_ID</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input class="form-control" id="name" type="text" placeholder="Enter your name..." value="{{ Req.location }}" readonly />
+                <label for="name">Location</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input class="form-control" id="name" type="text" placeholder="Enter your name..." value="{{ Req.category }}" readonly/>
+                <label for="name">Category</label>
+              </div>
+              <div class="form-floating mb-3">
+                <label for="name">Comments</label>
+                <textarea class="form-control"  rows="4" cols="30" readonly style="font-size: 15px;"> "{{ Req.comments }}"</textarea>             
+               </div>
+            </div>
+          <!-- Email address input-->
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input class="form-control" id="email" type="email" value="{{ Req.item }}" readonly/>
+                <label for="email">Item</label>
+              <div class="invalid-feedback" data-sb-feedback="email:required">An email is required.</div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input class="form-control" id="name" type="text" placeholder="Enter your name..." value="{{ Req.quantity }}"readonly />
+                <label for="name">Quantity</label>
+              </div>
+            </div>
+          <!-- Email address input-->
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input class="form-control" id="email" type="email" placeholder="name@example.com" value="{{ Req.created_at }}" readonly/>
+                <label for="email">Date Created</label>
+              </div>
+            </div> 
+          </div>      
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

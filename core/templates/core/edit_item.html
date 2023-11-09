@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+<div class="container">
+{% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {{ message|safe|escape }}
+    </div>
+    {% elif message.tags == 'error' %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+          {{ message|safe }}
+    </div>
+    {% endif %}
+{% endfor %}
+
+      <div class="container-flex">
+          <div class="container-fluid">
+          <div class="row">
+            <div class="col">
+            <h2>{{ title }}</h2>
+            </div>
+            <div class="col">
+              <h3>Request ID: {{ item.transaction_id}}</h3>
+            </div>
+            <div class="col">
+              <h3>Status: {{ item.status}}</h3>
+            </div>
+            </div>
+            </div>
+            <form method = "post" action=" ">
+                <div class="mb-3 mt-3">
+                {%  csrf_token %}
+                  {{ form.as_p }}
+                </div>
+                <button type="submit" class="w-50 btn btn-primary" name = "submit">Update</button>
+            </form>
+        </div>
+</div>
+
+{% endblock %}  
+
+ 
